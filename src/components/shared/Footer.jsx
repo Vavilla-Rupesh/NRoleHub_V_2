@@ -21,7 +21,7 @@ function Footer() {
             <ul className="mt-4 space-y-2">
               <li className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
                 <Mail className="h-4 w-4" />
-                <span>support@campusconnect.com</span>
+                <span>support@nrolehub.com</span>
               </li>
               <li className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
                 <Phone className="h-4 w-4" />
@@ -49,7 +49,7 @@ function Footer() {
         
         <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} Campus Connect. All rights reserved.
+            © {new Date().getFullYear()} NRolEHub. All rights reserved.
           </p>
         </div>
       </div>

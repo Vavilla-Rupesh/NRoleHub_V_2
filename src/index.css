@@ -193,3 +193,117 @@
 .animate-fade-in {
   animation: fade-in 1s ease-out forwards;
 }
+@keyframes lightBlueWhiteGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes borderAnimation {
+  0% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #add8e6; /* Light blue */
+  }
+  100% {
+    border-color: transparent;
+  }
+}
+
+.animate-lightBlueWhiteGradient {
+  background-size: 400% 400%;
+  animation: lightBlueWhiteGradient 10s ease infinite;
+}
+
+.border-animation {
+  animation: borderAnimation 3s ease-in-out infinite;
+}
+
+/* Add hover scaling effect */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.hover\:border-blue-400:hover {
+  border-color: #4fa3f7; /* Light blue border on hover */
+}
+
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+/* Add hover background color and smooth transition */
+@keyframes hoverBgAnimation {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: #e0f7ff; /* Subtle light blue */
+  }
+}
+
+.hover\:bg-blue-50:hover {
+  background-color: #e0f7ff; /* Light blue */
+}
+
+.dark\:hover\:bg-blue-900\/20:hover {
+  background-color: rgba(13, 42, 73, 0.2); /* Dark mode light blue effect */
+}
+
+/* Optional: Add a smooth transition on hover background color */
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Optionally, you can add a subtle scale animation on hover */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+@keyframes gradient-border {
+  0% {
+    box-shadow: 0 0 10px 4px rgba(0, 255, 255, 0.5), 0 0 20px 4px rgba(0, 0, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px 8px rgba(0, 255, 255, 0.7), 0 0 25px 8px rgba(0, 0, 255, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 10px 4px rgba(0, 255, 255, 0.5), 0 0 20px 4px rgba(0, 0, 255, 0.5);
+  }
+}
+
+.today-card {
+  position: relative;
+  display: inline-block;
+  border-radius: 12px;
+  padding: 1rem;
+  animation: gradient-border 3s infinite;
+  background-color: #fff; /* Or your desired background */
+}
+
+.today-card:hover {
+  /* Optional: You can add a hover effect */
+  box-shadow: 0 0 15px 8px rgba(0, 255, 255, 0.7), 0 0 25px 8px rgba(0, 0, 255, 0.7);
+}
+.today-highlight {
+  position: relative;
+  border: 2px solid #63b3ed;  /* Light blue border */
+  animation: pulseBorder 1.5s infinite;
+}
+
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 5px 0 rgba(99, 179, 237, 0.5);  /* Light blue shadow */
+  }
+  50% {
+    box-shadow: 0 0 10px 5px rgba(99, 179, 237, 0.7);  /* Stronger light blue shadow */
+  }
+  100% {
+    box-shadow: 0 0 5px 0 rgba(99, 179, 237, 0.5);  /* Light blue shadow */
+  }
+}

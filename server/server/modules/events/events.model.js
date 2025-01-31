@@ -34,19 +34,7 @@ const Event = sequelize.define('Event', {
         allowNull: false
     },
     nature_of_activity: {
-        type: DataTypes.ENUM(
-            'CEA/NSS/National Initiatives (OLD)',
-            'Sports & Games',
-            'Cultural Activities',
-            'Women\'s forum activities',
-            'Hobby clubs Activities',
-            'Professional society Activities',
-            'Dept. Students Association Activities',
-            'Technical Club Activities',
-            'Innovation and Incubation Cell Activities',
-            'Professional Self Initiatives',
-            'Others'
-        ),
+        type: DataTypes.TEXT,
         allowNull: false
     },
     iqac_reference: {

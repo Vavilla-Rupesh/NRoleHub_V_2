@@ -7,16 +7,34 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
+
+    port: 80,
+    
+    host: true,
+    
     proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-      },
-      '/uploads': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        rewrite: (path) => path
-      }
+    
+    '/api': {
+    
+    target: 'http://localhost:8080',
+    
+    changeOrigin: true,
+    
+    }, '/uploads': {
+    
+    target: 'http://localhost:8080',
+    
+    changeOrigin: true,
+    
+    rewrite: (path) => path
+    
     }
-  },
+    
+    }, hmr: {
+    
+    overlay: false
+    
+    }
+    
+    }
 });

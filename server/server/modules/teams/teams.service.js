@@ -188,11 +188,12 @@ exports.rejectJoinRequest = async (requestId) => {
   }
 };
 
-exports.searchTeams = async (eventId, subEventId) => {
+exports.searchTeams = async (eventId, subEventId,search) => {
   return Team.findAll({
     where: {
       event_id: eventId,
-      subevent_id: subEventId
+      subevent_id: subEventId,
+      ...(search && { name: { [Op.like]: `%${search}%` } })
     },
     include: [{
       model: TeamMember,

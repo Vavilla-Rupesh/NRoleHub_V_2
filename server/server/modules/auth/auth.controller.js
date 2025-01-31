@@ -132,7 +132,7 @@ exports.register = async (req, res) => {
         return res.status(400).json({ message: 'Year must be between 1 and 4' });
       }
       
-      if (semester < 1 || semester > 8) {
+      if (semester < 1 || semester > 2) {
         return res.status(400).json({ message: 'Semester must be between 1 and 8' });
       }
     }

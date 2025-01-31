@@ -19,18 +19,9 @@ function MyEvents() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Events</h1>
-        <div className="relative w-64">
-          <input
-            type="text"
-            placeholder="Search by subevent name..."
-            className="input pl-10 w-full"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-        </div>
       </div>
 
+      {/* Pass the search term to PaidEventsList */}
       <PaidEventsList searchTerm={searchTerm} />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { useParams } from 'react-router-dom';
 import { Search, Check, X, Users } from 'lucide-react';
 import { useAttendance } from '../../../../lib/hooks/useAttendance';
@@ -41,7 +41,7 @@ export default function AttendanceManager() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="stats glass-card p-4 flex items-center space-x-4">
+        <div className="stats glass-card p-4 flex items-center space-x-4 w-full sm:w-auto">
           <Users className="h-5 w-5 text-primary" />
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">Total Participants</p>
@@ -53,11 +53,11 @@ export default function AttendanceManager() {
           </div>
         </div>
 
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={() => markBulkAttendance(true)}
             disabled={bulkUpdating}
-            className="btn btn-success btn-sm"
+            className="btn btn-success btn-sm w-full sm:w-auto"
           >
             <Check className="h-4 w-4 mr-2" />
             Mark All Present
@@ -65,7 +65,7 @@ export default function AttendanceManager() {
           <button
             onClick={() => markBulkAttendance(false)}
             disabled={bulkUpdating}
-            className="btn btn-destructive btn-sm"
+            className="btn btn-destructive btn-sm w-full sm:w-auto"
           >
             <X className="h-4 w-4 mr-2" />
             Mark All Absent
@@ -84,7 +84,7 @@ export default function AttendanceManager() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>

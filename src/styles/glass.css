@@ -56,3 +56,96 @@
          shadow-lg
          transition-all duration-300;
 }
+
+/* Calendar Styles */
+.react-calendar {
+  @apply w-full bg-transparent border-none font-sans;
+}
+
+.react-calendar__navigation {
+  @apply mb-4;
+}
+
+.react-calendar__navigation button {
+  @apply text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors min-w-[44px] bg-transparent;
+}
+
+.react-calendar__navigation button:disabled {
+  @apply bg-transparent text-gray-400 dark:text-gray-600;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+.react-calendar__month-view__weekdays {
+  @apply text-sm uppercase font-medium text-gray-600 dark:text-gray-400;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  @apply p-2 text-center;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  @apply no-underline;
+}
+
+.react-calendar__month-view__days__day {
+  @apply p-2 text-sm text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  @apply text-red-500 dark:text-red-400;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  @apply text-gray-400 dark:text-gray-600;
+}
+
+.react-calendar__tile {
+  @apply p-2 text-sm text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors relative min-h-[80px];
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+.react-calendar__tile--now {
+  @apply bg-primary/10 text-primary;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  @apply bg-primary/20;
+}
+
+.react-calendar__tile--active {
+  @apply bg-primary text-primary-foreground;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-primary/90;
+}
+
+.calendar-tile {
+  @apply relative cursor-pointer;
+}
+
+.calendar-tile.has-event {
+  @apply bg-primary/10;
+}
+
+.calendar-tile.is-registered {
+  @apply bg-primary/20;
+}
+
+.event-indicator {
+  @apply absolute bottom-1 left-1 right-1 flex flex-col gap-0.5;
+}
+
+.event-name {
+  @apply text-[10px] leading-tight px-1 py-0.5 rounded bg-primary/20 text-primary dark:bg-primary/30 dark:text-primary-foreground truncate;
+}

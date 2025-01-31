@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Calendar, Award } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import api from '../../lib/api';
-import { formatDate } from '../../lib/utils';
-import LoadingSpinner from '../shared/LoadingSpinner';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Calendar, Award } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import api from "../../lib/api";
+import { formatDate } from "../../lib/utils";
+import LoadingSpinner from "../shared/LoadingSpinner";
+import toast from "react-hot-toast";
 
 function StudentHome() {
   const { user } = useAuth();
@@ -22,16 +22,22 @@ function StudentHome() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch user's registered events
-      const registrationsResponse = await api.get('/registrations/my-registrations');
-      const registrations = registrationsResponse.data.filter(reg => reg.payment_status === 'paid');
+      const registrationsResponse = await api.get(
+        "/registrations/my-registrations"
+      );
+      const registrations = registrationsResponse.data.filter(
+        (reg) => reg.payment_status === "paid"
+      );
 
       // Fetch leaderboard data for all events
-      const leaderboardPromises = registrations.map(reg => 
-        api.get(`/leaderboard/${reg.event_id}`, {
-          params: { subevent_id: reg.subevent_id }
-        }).catch(() => ({ data: [] }))
+      const leaderboardPromises = registrations.map((reg) =>
+        api
+          .get(`/leaderboard/${reg.event_id}`, {
+            params: { subevent_id: reg.subevent_id },
+          })
+          .catch(() => ({ data: [] }))
       );
       const leaderboardResponses = await Promise.all(leaderboardPromises);
 
@@ -41,39 +47,41 @@ function StudentHome() {
         const reg = registrations[index];
         const winners = response.data;
         const eventKey = `${reg.event_id}-${reg.subevent_id}`;
-        const userRank = winners.find(w => w.student_id === user.id)?.rank;
+        const userRank = winners.find((w) => w.student_id === user.id)?.rank;
         if (userRank) {
           winnersMap.set(eventKey, userRank);
         }
       });
 
       // Enhance registrations with rank data
-      const enhancedRegistrations = registrations.map(reg => {
+      const enhancedRegistrations = registrations.map((reg) => {
         const eventKey = `${reg.event_id}-${reg.subevent_id}`;
         const rank = winnersMap.get(eventKey);
         return { ...reg, rank };
       });
 
       // Calculate points
-      const { total, pointsByDate } = calculatePointsByDate(enhancedRegistrations);
+      const { total, pointsByDate } = calculatePointsByDate(
+        enhancedRegistrations
+      );
       setTotalPoints(total);
       setPointsByDate(pointsByDate);
       setRegisteredEvents(enhancedRegistrations);
 
       // Fetch upcoming events
-      const eventsResponse = await api.get('/events');
+      const eventsResponse = await api.get("/events");
       const now = new Date();
       now.setHours(0, 0, 0, 0);
-      
+
       const upcoming = eventsResponse.data.rows
-        .filter(event => new Date(event.start_date) >= now)
+        .filter((event) => new Date(event.start_date) >= now)
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         .slice(0, 5);
-      
+
       setUpcomingEvents(upcoming);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
-      toast.error('Failed to load dashboard data');
+      console.error("Failed to fetch data:", error);
+      toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -96,10 +104,14 @@ function StudentHome() {
     // Process each date
     Object.entries(eventsByDate).forEach(([date, regs]) => {
       // Calculate points for each registration
-      const eventPoints = regs.map(reg => ({
+      const eventPoints = regs.map((reg) => ({
         ...reg,
-        points: reg.rank ? 3 : (reg.attendance ? 2 : 0),
-        type: reg.rank ? `${reg.rank}${getRankSuffix(reg.rank)} Place` : (reg.attendance ? 'Participation' : 'Registered')
+        points: reg.rank ? 3 : reg.attendance ? 2 : 0,
+        type: reg.rank
+          ? `${reg.rank}${getRankSuffix(reg.rank)} Place`
+          : reg.attendance
+          ? "Participation"
+          : "Registered",
       }));
 
       // Sort by points and take top 2
@@ -108,12 +120,15 @@ function StudentHome() {
         .slice(0, 2);
 
       // Sum points for this date
-      const datePoints = topEvents.reduce((sum, event) => sum + event.points, 0);
+      const datePoints = topEvents.reduce(
+        (sum, event) => sum + event.points,
+        0
+      );
       totalPoints += datePoints;
 
       pointsByDate[date] = {
         events: topEvents,
-        totalPoints: datePoints
+        totalPoints: datePoints,
       };
     });
 
@@ -121,14 +136,18 @@ function StudentHome() {
   };
 
   const getRankSuffix = (rank) => {
-    if (!rank) return '';
-    if (rank >= 11 && rank <= 13) return 'th';
+    if (!rank) return "";
+    if (rank >= 11 && rank <= 13) return "th";
     const lastDigit = rank % 10;
     switch (lastDigit) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
   };
 
@@ -140,7 +159,9 @@ function StudentHome() {
       <div className="glass-card bg-gradient-to-r from-primary/10 to-primary-dark/10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Welcome back, {user?.username}!</h1>
+            <h1 className="text-2xl font-bold mb-2">
+              Welcome back, {user?.username}!
+            </h1>
             <p className="text-gray-600 dark:text-gray-300">
               You have registered for {registeredEvents.length} events
             </p>
@@ -196,33 +217,43 @@ function StudentHome() {
       <div className="glass-card">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">Upcoming Events</h2>
-          <Link to="/student/events" className="text-primary hover:text-primary/80">
+          <Link
+            to="/student/events"
+            className="text-primary hover:text-primary/80"
+          >
             View all
           </Link>
         </div>
 
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {upcomingEvents.map((event) => {
-            const isRegistered = registeredEvents.some(reg => reg.event_id === event.id);
+            const isRegistered = registeredEvents.some(
+              (reg) => reg.event_id === event.id
+            );
             const startDate = new Date(event.start_date);
-            const isToday = new Date().toDateString() === startDate.toDateString();
-            
+            const isToday =
+              new Date().toDateString() === startDate.toDateString();
+
             return (
               <Link
                 key={event.id}
                 to={`/student/events/${event.id}`}
-                className="block py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="block py-4 px-6 bg-gradient-to-r from-blue-50 to-white rounded-lg shadow-lg border-2 border-transparent border-animation hover:scale-105 hover:border-blue-400 transition-all duration-300"
               >
                 <div className="flex items-center space-x-4">
-                  <div className={`p-2 rounded-lg ${
-                    isToday 
-                      ? 'bg-yellow-100 dark:bg-yellow-900/20' 
-                      : 'bg-primary/10'
-                  }`}>
+                  <div
+                    className={`p-2 rounded-full ${
+                      isToday
+                        ? "bg-yellow-100 dark:bg-yellow-900/20"
+                        : "bg-primary/10"
+                    }`}
+                  >
                     <Calendar className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-medium">{event.event_name}</h3>
+                    <h3 className="font-medium text-gray-800 dark:text-gray-200">
+                      {event.event_name}
+                    </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(event.start_date)}
                       {isToday && (

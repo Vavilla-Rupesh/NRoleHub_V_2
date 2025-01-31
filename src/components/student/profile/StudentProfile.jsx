@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { User, Mail, Trophy, Star, Calendar, Award } from 'lucide-react';
-import { useAuth } from '../../../contexts/AuthContext';
-import api from '../../../lib/api';
-import { cn } from '../../../lib/utils';
-import { formatDate } from '../../../lib/utils';
+import React, { useState, useEffect } from "react";
+import { User, Mail, Trophy, Star, Calendar, Award } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthContext";
+import api from "../../../lib/api";
+import { cn } from "../../../lib/utils";
+import { formatDate } from "../../../lib/utils";
 
 function StudentProfile() {
   const { user } = useAuth();
@@ -21,56 +21,58 @@ function StudentProfile() {
     try {
       setLoading(true);
 
-      // Fetch user's registered events
-      const registrationsResponse = await api.get('/registrations/my-registrations');
-      const registrations = registrationsResponse.data.filter(reg => reg.payment_status === 'paid');
+      const registrationsResponse = await api.get(
+        "/registrations/my-registrations"
+      );
+      const registrations = registrationsResponse.data.filter(
+        (reg) => reg.payment_status === "paid"
+      );
 
-      // Fetch leaderboard data for all events
-      const leaderboardPromises = registrations.map(reg =>
-        api.get(`/leaderboard/${reg.event_id}`, {
-          params: { subevent_id: reg.subevent_id },
-        }).catch(() => ({ data: [] }))
+      const leaderboardPromises = registrations.map((reg) =>
+        api
+          .get(`/leaderboard/${reg.event_id}`, {
+            params: { subevent_id: reg.subevent_id },
+          })
+          .catch(() => ({ data: [] }))
       );
       const leaderboardResponses = await Promise.all(leaderboardPromises);
 
-      // Create a map of event winners
       const winnersMap = new Map();
       leaderboardResponses.forEach((response, index) => {
         const reg = registrations[index];
         const winners = response.data;
         const eventKey = `${reg.event_id}-${reg.subevent_id}`;
-        const userRank = winners.find(w => w.student_id === user.id)?.rank;
+        const userRank = winners.find((w) => w.student_id === user.id)?.rank;
         if (userRank) {
           winnersMap.set(eventKey, userRank);
         }
       });
 
-      // Enhance registrations with rank data
-      const enhancedRegistrations = registrations.map(reg => {
+      const enhancedRegistrations = registrations.map((reg) => {
         const eventKey = `${reg.event_id}-${reg.subevent_id}`;
         const rank = winnersMap.get(eventKey);
         return { ...reg, rank };
       });
 
-      // Calculate points
-      const { total, pointsByDate } = calculatePointsByDate(enhancedRegistrations);
+      const { total, pointsByDate } = calculatePointsByDate(
+        enhancedRegistrations
+      );
       setTotalPoints(total);
       setPointsByDate(pointsByDate);
       setRegisteredEvents(enhancedRegistrations);
 
-      // Fetch upcoming events
-      const eventsResponse = await api.get('/events');
+      const eventsResponse = await api.get("/events");
       const now = new Date();
       now.setHours(0, 0, 0, 0);
 
       const upcoming = eventsResponse.data.rows
-        .filter(event => new Date(event.start_date) >= now)
+        .filter((event) => new Date(event.start_date) >= now)
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         .slice(0, 5);
 
       setUpcomingEvents(upcoming);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
     }
@@ -90,17 +92,24 @@ function StudentProfile() {
     const pointsByDate = {};
 
     Object.entries(eventsByDate).forEach(([date, regs]) => {
-      const eventPoints = regs.map(reg => ({
+      const eventPoints = regs.map((reg) => ({
         ...reg,
         points: reg.rank ? 3 : reg.attendance ? 2 : 0,
-        type: reg.rank ? `${reg.rank}${getRankSuffix(reg.rank)} Place` : reg.attendance ? 'Participation' : 'Registered',
+        type: reg.rank
+          ? `${reg.rank}${getRankSuffix(reg.rank)} Place`
+          : reg.attendance
+          ? "Participation"
+          : "Registered",
       }));
 
       const topEvents = eventPoints
         .sort((a, b) => b.points - a.points)
         .slice(0, 2);
 
-      const datePoints = topEvents.reduce((sum, event) => sum + event.points, 0);
+      const datePoints = topEvents.reduce(
+        (sum, event) => sum + event.points,
+        0
+      );
       totalPoints += datePoints;
 
       pointsByDate[date] = {
@@ -113,21 +122,25 @@ function StudentProfile() {
   };
 
   const getRankSuffix = (rank) => {
-    if (!rank) return '';
-    if (rank >= 11 && rank <= 13) return 'th';
+    if (!rank) return "";
+    if (rank >= 11 && rank <= 13) return "th";
     const lastDigit = rank % 10;
     switch (lastDigit) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
   };
 
   return (
     <div className="min-h-[80vh] p-6 flex items-center justify-center">
-      <div className="glass-card w-full max-w-4xl overflow-hidden">
-        <div className="grid md:grid-cols-2 gap-8">
+      <div className="glass-card w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left side - User Info and Points History */}
           <div className="space-y-6">
             <div className="relative">
@@ -136,24 +149,31 @@ function StudentProfile() {
                 <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center transform hover:scale-110 transition-transform duration-300">
                   <User className="h-10 w-10 text-primary animate-pulse" />
                 </div>
-                <div>
+                <div className="flex-grow">
+                  {" "}
+                  {/* Added flex-grow here */}
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     {user?.username}
                   </h2>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Mail className="h-4 w-4 text-gray-400" />
-                    <span className="text-gray-600 dark:text-gray-300">{user?.email}</span>
+                  <div className="flex items-center space-x-1 mt-2">
+                    <Mail className="h-4 w-3 text-gray-400" />
+                    <span className="text-gray-600 dark:text-gray-300">
+                      {user?.email}
+                    </span>{" "}
+                    {/* Added truncate */}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className={cn(
-                "p-4 rounded-xl border border-white/20 dark:border-gray-700/20",
-                "bg-gradient-to-br from-primary/10 to-secondary/10",
-                "transform hover:scale-105 transition-all duration-300"
-              )}>
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-4">
+              <div
+                className={cn(
+                  "p-4 rounded-xl border border-white/20 dark:border-gray-700/20",
+                  "bg-gradient-to-br from-primary/10 to-secondary/10",
+                  "transform hover:scale-105 transition-all duration-300"
+                )}
+              >
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-5 w-5 text-primary animate-pulse" />
                   <span className="font-medium">Events Participated</span>
@@ -163,61 +183,50 @@ function StudentProfile() {
                 </p>
               </div>
 
-              <div className={cn(
-                "p-4 rounded-xl border border-white/20 dark:border-gray-700/20",
-                "bg-gradient-to-br from-yellow-500/10 to-amber-500/10",
-                "transform hover:scale-105 transition-all duration-300"
-              )}>
+              <div
+                className={cn(
+                  "p-4 rounded-xl border border-white/20 dark:border-gray-700/20",
+                  "bg-gradient-to-br from-yellow-500/10 to-amber-500/10",
+                  "transform hover:scale-105 transition-all duration-300"
+                )}
+              >
                 <div className="flex items-center space-x-2">
                   <Trophy className="h-5 w-5 text-yellow-500 animate-pulse" />
                   <span className="font-medium">Events Won</span>
                 </div>
                 <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent">
-                  {registeredEvents.filter(reg => reg.rank).length}
+                  {registeredEvents.filter((reg) => reg.rank).length}
                 </p>
               </div>
             </div>
 
             {/* Points History */}
-            <div className="mt-8 space-y-4">
-              <h3 className="text-lg font-semibold">Points History</h3>
-              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-                {Object.entries(pointsByDate).map(([date, { events, totalPoints }]) => (
-                  <div 
-                    key={date}
-                    className="p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20 backdrop-blur-sm"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">{formatDate(new Date(date))}</span>
-                      <span className="text-sm font-bold text-primary">
-                        {totalPoints} points
-                      </span>
+            {/* <div className="mt-8 space-y-4">
+          <h3 className="text-lg font-semibold">Points History</h3>
+          <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+            {Object.entries(pointsByDate).map(([date, { events, totalPoints }]) => (
+              <div key={date} className="p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20 backdrop-blur-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium">{formatDate(new Date(date))}</span>
+                  <span className="text-sm font-bold text-primary">{totalPoints} points</span>
+                </div>
+                <div className="space-y-2">
+                  {events.map((event, idx) => (
+                    <div key={idx} className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">{event.event_name}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className={cn("px-2 py-1 rounded-full text-xs", event.rank ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800")}>
+                          {event.type}
+                        </span>
+                        <span className="font-medium">{event.points} pts</span>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      {events.map((event, idx) => (
-                        <div 
-                          key={idx}
-                          className="flex justify-between items-center text-sm"
-                        >
-                          <span className="text-gray-600 dark:text-gray-400">
-                            {event.event_name}
-                          </span>
-                          <div className="flex items-center space-x-2">
-                            <span className={cn(
-                              "px-2 py-1 rounded-full text-xs",
-                              event.rank ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"
-                            )}>
-                              {event.type}
-                            </span>
-                            <span className="font-medium">{event.points} pts</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
+          </div>
+        </div> */}
           </div>
 
           {/* Right side - Points Animation */}
@@ -228,7 +237,9 @@ function StudentProfile() {
                 <Star className="h-8 w-8 text-yellow-500 animate-spin-slow" />
               </div>
               <Award className="h-16 w-16 text-primary mb-4 animate-bounce" />
-              <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">Total Points</h3>
+              <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">
+                Total Points
+              </h3>
               <div className="relative mt-4">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary blur-lg opacity-50" />
                 <p className="relative text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent animate-pulse">

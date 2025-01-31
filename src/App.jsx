@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -12,6 +12,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import ForgotPassword from './components/auth/ForgotPassword';
 import LandingPage from './components/LandingPage';
+import EventCalendar from './components/shared/EventCalendar';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -27,12 +28,16 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-function AppContent() {
+const AppContent = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      {user && <Navbar />}
+      <Navbar 
+        showLoginButton={!user} 
+        onLoginClick={() => navigate('/login')} 
+      />
       <main className={`flex-grow ${!user && 'p-0'}`}>
         <Routes>
           {/* Auth Routes */}
@@ -43,9 +48,7 @@ function AppContent() {
           {/* Landing Page */}
           <Route 
             path="/" 
-            element={
-              user ? <LandingPage /> : <Navigate to="/login" />
-            } 
+            element={user ? <Navigate to={`/${user.role}`} /> : <LandingPage />} 
           />
           
           {/* Admin Routes */}
@@ -78,18 +81,16 @@ function AppContent() {
       <Toaster position="top-right" />
     </div>
   );
-}
+};
 
-function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <ThemeProvider>
-          <AppContent />
-        </ThemeProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  );
-}
+const App = () => (
+  <BrowserRouter>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AuthProvider>
+  </BrowserRouter>
+);
 
 export default App;

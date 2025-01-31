@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Eye, Download, Cursor, RotateCcw, Upload } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import React, { useState, useRef, useEffect } from "react";
+import { Eye, Download, Cursor, RotateCcw, Upload } from "lucide-react";
+import { cn } from "../../../lib/utils";
 
 export default function CertificatePreview() {
   const [template, setTemplate] = useState(null);
@@ -12,14 +12,14 @@ export default function CertificatePreview() {
     name: { x: 300, y: 400 },
     date: { x: 300, y: 500 },
     event: { x: 300, y: 300 },
-    certificateId: { x: 850, y: 550 }
+    certificateId: { x: 850, y: 550 },
   });
 
   const handleTemplateUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file');
+      if (!file.type.startsWith("image/")) {
+        alert("Please upload an image file");
         return;
       }
       setTemplate(file);
@@ -34,16 +34,16 @@ export default function CertificatePreview() {
       const rect = imageRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
-      setFieldPositions(prev => ({
+
+      setFieldPositions((prev) => ({
         ...prev,
-        [selectedField]: { x, y }
+        [selectedField]: { x, y },
       }));
     }
   };
 
   const generateCertificateId = () => {
-    const prefix = 'CC';
+    const prefix = "CC";
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 5);
     return `${prefix}-${timestamp}-${random}`.toUpperCase();
@@ -64,7 +64,7 @@ export default function CertificatePreview() {
             />
           </label>
           <span className="text-sm text-gray-600">
-            {template ? template.name : 'No template uploaded'}
+            {template ? template.name : "No template uploaded"}
           </span>
         </div>
 
@@ -87,12 +87,14 @@ export default function CertificatePreview() {
             )}
           </button>
           <button
-            onClick={() => setFieldPositions({
-              name: { x: 300, y: 400 },
-              date: { x: 300, y: 500 },
-              event: { x: 300, y: 300 },
-              certificateId: { x: 850, y: 550 }
-            })}
+            onClick={() =>
+              setFieldPositions({
+                name: { x: 300, y: 400 },
+                date: { x: 300, y: 500 },
+                event: { x: 300, y: 300 },
+                certificateId: { x: 850, y: 550 },
+              })
+            }
             className="btn btn-ghost"
           >
             <RotateCcw className="h-4 w-4 mr-2" />
@@ -114,13 +116,13 @@ export default function CertificatePreview() {
           {!previewMode && (
             <div className="absolute top-4 left-4 space-y-2 bg-white/90 dark:bg-gray-800/90 p-4 rounded-lg backdrop-blur-sm">
               <p className="font-medium mb-2">Select field to position:</p>
-              {Object.keys(fieldPositions).map(field => (
+              {Object.keys(fieldPositions).map((field) => (
                 <button
                   key={field}
                   onClick={() => setSelectedField(field)}
                   className={cn(
                     "btn btn-sm w-full",
-                    selectedField === field ? 'btn-primary' : 'btn-ghost'
+                    selectedField === field ? "btn-primary" : "btn-ghost"
                   )}
                 >
                   {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -130,42 +132,58 @@ export default function CertificatePreview() {
           )}
 
           {/* Field Position Markers */}
-          {!previewMode && Object.entries(fieldPositions).map(([field, pos]) => (
-            <div
-              key={field}
-              className="absolute w-2 h-2 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2"
-              style={{ left: pos.x, top: pos.y }}
-            >
-              <span className="absolute top-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs bg-primary text-white px-2 py-1 rounded">
-                {field}
-              </span>
-            </div>
-          ))}
+          {!previewMode &&
+            Object.entries(fieldPositions).map(([field, pos]) => (
+              <div
+                key={field}
+                className="absolute w-2 h-2 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2"
+                style={{ left: pos.x, top: pos.y }}
+              >
+                <span className="absolute top-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs bg-primary text-white px-2 py-1 rounded">
+                  {field}
+                </span>
+              </div>
+            ))}
 
-          {/* Preview Mode */}
           {previewMode && (
             <>
               <div
-                className="absolute text-2xl font-bold text-gray-800"
-                style={{ left: fieldPositions.name.x, top: fieldPositions.name.y }}
+                className="absolute text-xl font-bold text-gray-800"
+                style={{
+                  left: fieldPositions.name.x,
+                  top: fieldPositions.name.y,
+                  fontSize: "18px", // Adjust the font size here
+                }}
               >
                 John Doe
               </div>
               <div
                 className="absolute text-lg text-gray-700"
-                style={{ left: fieldPositions.date.x, top: fieldPositions.date.y }}
+                style={{
+                  left: fieldPositions.date.x,
+                  top: fieldPositions.date.y,
+                  fontSize: "14px", // Adjust the font size here
+                }}
               >
                 March 15, 2024
               </div>
               <div
                 className="absolute text-xl font-semibold text-gray-800"
-                style={{ left: fieldPositions.event.x, top: fieldPositions.event.y }}
+                style={{
+                  left: fieldPositions.event.x,
+                  top: fieldPositions.event.y,
+                  fontSize: "16px", // Adjust the font size here
+                }}
               >
                 Web Development Workshop
               </div>
               <div
                 className="absolute text-sm text-gray-600"
-                style={{ left: fieldPositions.certificateId.x, top: fieldPositions.certificateId.y }}
+                style={{
+                  left: fieldPositions.certificateId.x,
+                  top: fieldPositions.certificateId.y,
+                  fontSize: "12px", // Adjust the font size here
+                }}
               >
                 {generateCertificateId()}
               </div>
@@ -175,7 +193,9 @@ export default function CertificatePreview() {
       ) : (
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
           <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-600">Upload a certificate template to begin</p>
+          <p className="text-gray-600">
+            Upload a certificate template to begin
+          </p>
         </div>
       )}
 
@@ -192,10 +212,12 @@ export default function CertificatePreview() {
                     <input
                       type="number"
                       value={pos.x}
-                      onChange={(e) => setFieldPositions(prev => ({
-                        ...prev,
-                        [field]: { ...pos, x: parseInt(e.target.value) }
-                      }))}
+                      onChange={(e) =>
+                        setFieldPositions((prev) => ({
+                          ...prev,
+                          [field]: { ...pos, x: parseInt(e.target.value) },
+                        }))
+                      }
                       className="input w-full"
                     />
                   </div>
@@ -204,10 +226,12 @@ export default function CertificatePreview() {
                     <input
                       type="number"
                       value={pos.y}
-                      onChange={(e) => setFieldPositions(prev => ({
-                        ...prev,
-                        [field]: { ...pos, y: parseInt(e.target.value) }
-                      }))}
+                      onChange={(e) =>
+                        setFieldPositions((prev) => ({
+                          ...prev,
+                          [field]: { ...pos, y: parseInt(e.target.value) },
+                        }))
+                      }
                       className="input w-full"
                     />
                   </div>

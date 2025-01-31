@@ -1,11 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Calendar, MapPin, Clock, Tag } from 'lucide-react';
+import { Calendar, MapPin, Clock, Tag, Download} from 'lucide-react';
 import api from '../../../lib/api';
 import SubEventList from './SubEventList';
 import LoadingSpinner from '../../shared/LoadingSpinner';
 import { formatDate } from '../../../lib/utils';
 import toast from 'react-hot-toast';
+
+function EventImage({ event }) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  return (
+    <>
+      {/* Right side - Event Image */}
+      {event?.event_image && (
+        <div className="glass-card h-full p-0 overflow-hidden bg-transparent">
+          <img
+            src={event.event_image}
+            alt={event.event_name}
+            className="w-full h-full object-contain transform transition-transform duration-300 hover:scale-105 cursor-pointer"
+            onClick={() => setIsPopupOpen(true)} // Open popup on click
+          />
+        </div>
+      )}
+
+      {/* Popup Modal */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-transparent p-4 rounded-lg relative max-w-4xl w-auto max-h-[80vh] overflow-auto">
+            {/* Image */}
+            <img
+              src={event.event_image}
+              alt={event.event_name}
+              className="w-full h-auto rounded-lg"
+            />
+            
+            {/* Close and Download buttons */}
+            <div className="absolute top-4 right-4 flex space-x-2">
+              {/* Download Button */}
+              <a
+                href={event.event_image}
+                download={event.event_name} // Image will be downloaded with event name
+                className="bg-blue-500 text-white p-3 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-105 hover:bg-blue-600 hover:shadow-lg"
+              >
+                <Download className="h-6 w-6" />
+              </a>
+              
+              {/* Close Button */}
+              <button
+                className="text-white bg-red-500 rounded-full p-3 flex items-center justify-center transition-transform duration-300 hover:scale-105 hover:bg-red-600 hover:shadow-lg"
+                onClick={() => setIsPopupOpen(false)} // Close popup
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+
 
 function EventDetails() {
   const { id } = useParams();
@@ -38,13 +94,7 @@ function EventDetails() {
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6 h-[500px]">
         {/* Event Image */}
-        <div className="glass-card h-full p-0 overflow-hidden">
-          <img
-            src={event?.event_image}
-            alt={event?.event_name}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <EventImage event={event} />
 
         {/* Event Details */}
         <div className="glass-card h-full overflow-y-auto">

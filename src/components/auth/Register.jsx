@@ -122,7 +122,7 @@ export default function Register() {
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
               <div className="glass-icon-container p-4 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20">
-                <Shield className="h-10 w-10 text-primary animate-pulse" />
+              <img src="../server/server/images/logo.png" alt="logo" width={100} height={60} className="animate-pulse"/>
               </div>
             </div>
             <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -132,6 +132,10 @@ export default function Register() {
               {showOTPInput ? 'Enter the OTP sent to your email' : 'Join NRolEHub today'}
             </p>
           </div>
+          <p class="text-yellow-600 bg-yellow-100 border-l-4 border-yellow-500 p-1 text-sm font-semibold mb-2">
+  Please fill in the details carefully, as they will be reflected on your certificates.
+</p>
+
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {showOTPInput ? (
@@ -297,7 +301,7 @@ export default function Register() {
                           required
                         >
                           <option value="">Select Semester</option>
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                          {[1, 2].map(sem => (
                             <option key={sem} value={sem}>{sem}</option>
                           ))}
                         </select>

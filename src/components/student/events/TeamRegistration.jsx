@@ -128,7 +128,8 @@ export default function TeamRegistration({
       const response = await api.get('/teams/search', {
         params: {
           event_id: parseInt(eventId),
-          subevent_id: parseInt(subEventId)
+          subevent_id: parseInt(subEventId),
+          search:searchTerm
         }
       });
       

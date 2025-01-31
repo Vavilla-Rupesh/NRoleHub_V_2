@@ -184,7 +184,7 @@ exports.getAllStudentRegistrations = async () => {
         },
         {
           model: Subevent,
-          attributes: ['title']
+          attributes: ['title','fee']
         }
       ],
       order: [['registration_date', 'DESC']]
@@ -226,10 +226,11 @@ exports.getAllStudentRegistrations = async () => {
         nature_of_activity: reg.Event?.nature_of_activity || 'N/A',
         razorpay_payment_id: reg.razorpay_payment_id || 'N/A',
         certificate_id:certificate?.certificate_id||'N/A',
-        attendance: reg.attendance || 'N/A',
+        attendance: reg.attendance===true,
         participation_type: leaderboardEntry?.rank ? 'Merit' : 'Participation',
         rank: leaderboardEntry?.rank || null,
-        registration_date: reg.registration_date || 'N/A'
+        registration_date: reg.registration_date || 'N/A',
+        amount: reg.Subevent?.fee || 0  // Add amount field
       };
     }));
 

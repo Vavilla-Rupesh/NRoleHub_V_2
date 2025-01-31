@@ -12,11 +12,11 @@ export default function LandingPage() {
         {/* Add your navbar component here if you have one */}
   
         {/* Image Strip Below Navbar */}
-        <div className="w-full">
+        <div className="w-full p-2">
           <img
-            src="src/components/banner.png"  // Replace with the actual image URL
+            src="src/components/banner1.png" 
             alt="Campus Image"
-            className="w-full h-auto"  // Makes the image responsive
+            className="w-full h-auto" 
           />
         </div>
   

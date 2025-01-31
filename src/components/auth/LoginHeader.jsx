@@ -9,7 +9,7 @@ export default function LoginHeader() {
                       bg-gradient-to-br from-primary/20 to-secondary/20
                       border border-gray-200 dark:border-gray-700 backdrop-blur-sm
                       transform hover:scale-110 transition-all duration-300">
-         <img src="../server/server/images/logo.png" alt="logo" width={100} height={60}/>
+         <img src="src/components/shared/logo.png" alt="logo" width={100} height={60} className="animate-pulse"/>
         </div>
       </div>
       <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent

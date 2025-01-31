@@ -18,12 +18,21 @@ export default function CertificatePreview({
   const fields = isTeam ? {
     teamName: 'Team Name',
     name: 'Student Name',
+    year: 'Year',
+    sem: 'Semester',
+    rollNumber: 'Roll Number',
+    college: 'College',
     event: 'Event Name',
     date: 'Date',
+    stream:'Stream',
     certificateId: 'Certificate ID',
     ...(type === 'merit' && { rank: 'Rank' })
   } : {
     name: 'Student Name',
+    year: 'Year',
+    sem: 'Semester',
+    rollNumber: 'Roll Number',
+    college: 'College',
     event: 'Event Name',
     date: 'Date',
     certificateId: 'Certificate ID',
@@ -34,10 +43,10 @@ export default function CertificatePreview({
     if (!previewMode && selectedField) {
       const rect = imageRef.current.getBoundingClientRect();
       const scale = imageRef.current.naturalWidth / rect.width;
-      
+
       const x = Math.round((e.clientX - rect.left) * scale);
       const y = Math.round((e.clientY - rect.top) * scale);
-      
+
       setPositions(prev => ({
         ...prev,
         [selectedField]: { x, y }
@@ -114,7 +123,7 @@ export default function CertificatePreview({
             />
 
             {!previewMode && (
-              <div className="absolute top-4 left-4 space-y-2 bg-white/90 dark:bg-gray-800/90 p-4 rounded-lg backdrop-blur-sm">
+              <div className="top-4 left-4 space-y-2 bg-white/90 dark:bg-gray-800/90 p-4 rounded-lg backdrop-blur-sm">
                 <p className="font-medium mb-2">Select field to position:</p>
                 {Object.entries(fields).map(([key, label]) => (
                   <button
@@ -161,6 +170,26 @@ export default function CertificatePreview({
                       content = 'John Doe';
                       className += 'text-2xl font-bold text-gray-800';
                       break;
+                    case 'year':
+                      content = 'IV';
+                      className += 'text-lg text-gray-700';
+                      break;
+                    case 'sem':
+                      content = 'II';
+                      className += 'text-lg text-gray-700';
+                      break;
+                      case 'stream':
+                        content = 'B.tech/CSE';
+                        className += 'text-lg text-gray-700';
+                        break;
+                    case 'rollNumber':
+                      content = '21CSE12345';
+                      className += 'text-sm text-gray-600';
+                      break;
+                    case 'college':
+                      content = 'ABC Institute of Technology';
+                      className += 'text-lg text-gray-800';
+                      break;
                     case 'event':
                       content = 'Web Development Workshop';
                       className += 'text-xl font-semibold text-gray-800';
@@ -174,7 +203,7 @@ export default function CertificatePreview({
                       className += 'text-sm text-gray-600';
                       break;
                     case 'rank':
-                      content = '1st Place Team';
+                      content = '1st Place';
                       className += 'text-xl font-bold text-primary';
                       break;
                   }

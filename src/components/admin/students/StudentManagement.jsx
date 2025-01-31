@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter, ArrowUpDown, Download, Users } from "lucide-react";
+import {
+  Search,
+  Filter,
+  ArrowUpDown,
+  Download,
+  Users,
+  IndianRupee,
+} from "lucide-react";
 import api from "../../../lib/api";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import { cn } from "../../../lib/utils";
 import toast from "react-hot-toast";
+import { formatCurrency } from "../../../lib/utils";
+import * as XLSX from "xlsx";
 
 const NATURE_OF_ACTIVITIES = [
   "CEA/NSS/National Initiatives (OLD)",
@@ -156,17 +165,24 @@ export default function StudentManagement() {
           student.nature_of_activity === filters.natureOfActivity) &&
         (!filters.attendance ||
           student.attendance.toString() === filters.attendance) &&
-          (!filters.certificateStatus ||
-            (filters.certificateStatus === "yes"
-              ? student.certificate_id !== null && student.certificate_id !== 'N/A'
-              : student.certificate_id === 'N/A')) &&
-          (!filters.participationType ||
-            student.participation_type === filters.participationType)          
+        (!filters.certificateStatus ||
+          (filters.certificateStatus === "yes"
+            ? student.certificate_id !== null &&
+              student.certificate_id !== "N/A"
+            : student.certificate_id === "N/A")) &&
+        (!filters.participationType ||
+          student.participation_type === filters.participationType);
       return matchesSearch && matchesFilters;
     });
   };
-
-  const exportToCSV = () => {
+  const filteredStudents = filterData(sortData(students)).filter(
+    (student) => student.razorpay_payment_id !== "N/A"
+  );  
+  const totalAmount = filteredStudents.reduce((sum, student) => {
+    const amount = parseFloat(student.amount);
+    return sum + (isNaN(amount) ? 0 : amount);
+  }, 0);
+  const exportToXLSX = () => {
     const headers = [
       "Name",
       "Roll Number",
@@ -183,6 +199,7 @@ export default function StudentManagement() {
       "Certificate ID",
       "Attendance",
       "Participation Type",
+      "Amount",
     ];
 
     const csvData = filteredStudents.map((student) => [
@@ -201,21 +218,41 @@ export default function StudentManagement() {
       student.certificate_id || "N/A",
       student.attendance ? "Present" : "Absent",
       student.participation_type,
+      formatCurrency(student.amount),
     ]);
+    const totalAmountRow = [
+      "Total Amount",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      formatCurrency(totalAmount),
+    ];
 
-    const csvContent = [
-      headers.join(","),
-      ...csvData.map((row) => row.join(",")),
-    ].join("\n");
+    // Prepare data for XLSX
+    const sheetData = [
+      headers,
+      ...csvData,
+      totalAmountRow, // Add the total amount row
+    ];
+    const sheetName = searchTerm ? `student_data_${searchTerm}` : "student_data";
+    const ws = XLSX.utils.aoa_to_sheet(sheetData); // Create worksheet
+    const wb = XLSX.utils.book_new(); // Create a new workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Student Data"); // Append worksheet to workbook
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "student_data.csv";
-    link.click();
+    // Export to .xlsx
+    XLSX.writeFile(wb, `${sheetName}.xlsx`);
   };
-
-  const filteredStudents = filterData(sortData(students));
 
   if (loading) return <LoadingSpinner />;
 
@@ -226,9 +263,9 @@ export default function StudentManagement() {
           <Users className="h-6 w-6 mr-2" />
           Student Management
         </h1>
-        <button onClick={exportToCSV} className="btn btn-secondary">
+        <button onClick={exportToXLSX} className="btn btn-secondary">
           <Download className="h-4 w-4 mr-2" />
-          Export to CSV
+          Export to XLSX
         </button>
       </div>
 
@@ -269,10 +306,11 @@ export default function StudentManagement() {
                   { key: "event_name", label: "Event" },
                   { key: "subevent_name", label: "Sub Event" },
                   { key: "nature_of_activity", label: "Nature of Activity" },
-                  { key: "razorpay_payment_id", label: "Payment ID" },
                   { key: "certificate_id", label: "Certificate ID" },
                   { key: "attendance", label: "Attendance" },
-                  { key: "participation_type", label: "Participation" },
+                  { key: "participation_type", label: "Participation/Merit" },
+                  { key: "razorpay_payment_id", label: "Payment ID" },
+                  { key: "amount", label: "Amount" },
                 ].map(({ key, label }) => (
                   <th
                     key={key}
@@ -334,9 +372,6 @@ export default function StudentManagement() {
                     {student.nature_of_activity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {student.razorpay_payment_id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     {student.certificate_id || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -351,6 +386,7 @@ export default function StudentManagement() {
                       {student.attendance ? "Present" : "Absent"}
                     </span>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={cn(
@@ -366,9 +402,27 @@ export default function StudentManagement() {
                         ` - Rank ${student.rank}`}
                     </span>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {student.razorpay_payment_id}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">
+                    {formatCurrency(student.amount)}
+                  </td>
                 </tr>
               ))}
             </tbody>
+            <tfoot className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <td colSpan="15" className="px-6 py-4 text-right font-bold">
+                  Total Amount:
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap font-bold text-primary">
+                  <div className="flex items-center space-x-1">
+                    <span>{formatCurrency(totalAmount)}</span>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -477,7 +531,7 @@ export default function StudentManagement() {
                 }
               >
                 <option value="">All</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                {[1, 2].map((sem) => (
                   <option key={sem} value={sem}>
                     {sem}
                   </option>

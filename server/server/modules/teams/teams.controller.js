@@ -44,7 +44,7 @@ exports.rejectRequest = async (req, res) => {
 
 exports.searchTeams = async (req, res) => {
   try {
-    const teams = await TeamsService.searchTeams(req.query.event_id, req.query.subevent_id);
+    const teams = await TeamsService.searchTeams(req.query.event_id, req.query.subevent_id,req.query.search);
     res.status(200).json(teams);
   } catch (error) {
     res.status(400).json({ message: error.message });

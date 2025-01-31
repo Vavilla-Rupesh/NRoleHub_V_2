@@ -1,32 +1,45 @@
-import React, { useState } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
-import { validateEventForm } from '../../../lib/validation';
-import { useAuth } from '../../../contexts/AuthContext';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { validateEventForm } from "../../../lib/validation";
+import { useAuth } from "../../../contexts/AuthContext";
+import toast from "react-hot-toast";
 
-function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
+function EventForm({ initialData = {}, onSubmit, submitText = "Submit" }) {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
-    event_name: '',
-    description: '',
-    start_date: '',
-    end_date: '',
-    venue: '',
-    eligibility_criteria: '',
-    nature_of_activity: '',
-    iqac_reference: '',
+    event_name: "",
+    description: "",
+    start_date: "",
+    end_date: "",
+    venue: "",
+    eligibility_criteria: "",
+    nature_of_activity: "",
+    other_activity: "",
+    iqac_reference: "",
     created_by: user?.id,
-    ...initialData
+    ...initialData,
   });
 
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(initialData.event_image || '');
+  const [imagePreview, setImagePreview] = useState(
+    initialData.event_image || ""
+  );
   const [errors, setErrors] = useState({});
   const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    // If 'Others' is selected, set 'other_activity' value to 'nature_of_activity'
+if (formData.nature_of_activity === 'Others' && formData.other_activity) {
+  formData.nature_of_activity = formData.other_activity
+    .replace(/,\r?\n/g, ',')       // Replace ',\r\n' or ',\n' with a single comma
+    .replace(/,\r/g, ',')          // Specifically replace ',\r' with a single comma
+    .replace(/,\n/g, ',')          // Specifically replace ',\n' with a single comma
+    .replace(/(\r?\n|\r)/g, ',')   // Replace remaining newlines and carriage returns with commas
+    .trim();                       // Remove any leading/trailing whitespace
+}
+
+
     const validationErrors = validateEventForm(formData);
     if (validationErrors) {
       setErrors(validationErrors);
@@ -38,9 +51,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
 
       // Create FormData object
       const formDataToSubmit = new FormData();
-      
+
       // Append all form fields
-      Object.keys(formData).forEach(key => {
+      Object.keys(formData).forEach((key) => {
         if (formData[key] !== undefined && formData[key] !== null) {
           formDataToSubmit.append(key, formData[key]);
         }
@@ -48,12 +61,12 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
 
       // Append image file if exists
       if (imageFile) {
-        formDataToSubmit.append('event_image', imageFile);
+        formDataToSubmit.append("event_image", imageFile);
       }
 
       await onSubmit(formDataToSubmit);
     } catch (error) {
-      toast.error('Failed to create event');
+      toast.error("Failed to create event");
     } finally {
       setUploading(false);
     }
@@ -61,9 +74,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: null }));
+      setErrors((prev) => ({ ...prev, [name]: null }));
     }
   };
 
@@ -72,14 +85,14 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size should be less than 5MB');
+      toast.error("Image size should be less than 5MB");
       return;
     }
 
@@ -95,21 +108,26 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
 
   const removeImage = () => {
     setImageFile(null);
-    setImagePreview('');
-    const input = document.getElementById('event_image');
+    setImagePreview("");
+    const input = document.getElementById("event_image");
     if (input) {
-      input.value = '';
+      input.value = "";
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:text-white overflow-auto max-h-[80vh]">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:text-white overflow-auto max-h-[80vh]"
+    >
       <div>
         <label className="block text-sm font-medium mb-1">Event Name</label>
         <input
           type="text"
           name="event_name"
-          className={`input w-full ${errors.event_name ? 'border-red-500' : ''} dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
+          className={`input w-full ${
+            errors.event_name ? "border-red-500" : ""
+          } dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
           value={formData.event_name}
           onChange={handleChange}
           required
@@ -136,7 +154,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
           <input
             type="datetime-local"
             name="start_date"
-            className={`input w-full ${errors.start_date ? 'border-red-500' : ''} dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
+            className={`input w-full ${
+              errors.start_date ? "border-red-500" : ""
+            } dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
             value={formData.start_date}
             onChange={handleChange}
             required
@@ -145,13 +165,15 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
             <p className="text-red-500 text-sm mt-1">{errors.start_date}</p>
           )}
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium mb-1">End Date</label>
           <input
             type="datetime-local"
             name="end_date"
-            className={`input w-full ${errors.end_date ? 'border-red-500' : ''} dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
+            className={`input w-full ${
+              errors.end_date ? "border-red-500" : ""
+            } dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
             value={formData.end_date}
             onChange={handleChange}
             required
@@ -167,7 +189,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
         <input
           type="text"
           name="venue"
-          className={`input w-full ${errors.venue ? 'border-red-500' : ''} dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
+          className={`input w-full ${
+            errors.venue ? "border-red-500" : ""
+          } dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300`}
           value={formData.venue}
           onChange={handleChange}
           required
@@ -178,7 +202,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Nature of Activity</label>
+        <label className="block text-sm font-medium mb-1">
+          Nature of Activity
+        </label>
         <select
           name="nature_of_activity"
           className="input w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300"
@@ -187,14 +213,33 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
           required
         >
           <option value="">Select activity type</option>
-          {NATURE_OF_ACTIVITY_OPTIONS.map(option => (
-            <option key={option} value={option}>{option}</option>
+          {NATURE_OF_ACTIVITY_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
         </select>
       </div>
-
+      {formData.nature_of_activity === "Others" && (
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Specify Activity
+          </label>
+          <textarea
+            type="text"
+            name="other_activity"
+            className="input w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300"
+            value={formData.other_activity}
+            onChange={handleChange}
+            placeholder="Enter the nature of your activity"
+            rows="3"
+          />
+        </div>
+      )}
       <div>
-        <label className="block text-sm font-medium mb-1">IQAC Reference Number</label>
+        <label className="block text-sm font-medium mb-1">
+          IQAC Reference Number
+        </label>
         <input
           type="text"
           name="iqac_reference"
@@ -207,7 +252,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Event Image/Flyer (Optional)</label>
+        <label className="block text-sm font-medium mb-1">
+          Event Image/Flyer (Optional)
+        </label>
         <div className="mt-2">
           {imagePreview ? (
             <div className="relative">
@@ -242,7 +289,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
                     />
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG up to 5MB</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  PNG, JPG up to 5MB
+                </p>
               </div>
             </div>
           )}
@@ -250,7 +299,9 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Eligibility Criteria</label>
+        <label className="block text-sm font-medium mb-1">
+          Eligibility Criteria
+        </label>
         <textarea
           name="eligibility_criteria"
           className="input w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-gray-100 border border-gray-300"
@@ -265,7 +316,7 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
         disabled={uploading}
         className="btn btn-primary w-full bg-blue-600 text-white dark:bg-blue-500 dark:text-white hover:bg-blue-700"
       >
-        {uploading ? 'Creating Event...' : submitText}
+        {uploading ? "Creating Event..." : submitText}
       </button>
     </form>
   );
@@ -274,15 +325,15 @@ function EventForm({ initialData = {}, onSubmit, submitText = 'Submit' }) {
 export default EventForm;
 
 const NATURE_OF_ACTIVITY_OPTIONS = [
-  'CEA/NSS/National Initiatives (OLD)',
-  'Sports & Games',
-  'Cultural Activities',
-  'Women\'s forum activities',
-  'Hobby clubs Activities',
-  'Professional society Activities',
-  'Dept. Students Association Activities',
-  'Technical Club Activities',
-  'Innovation and Incubation Cell Activities',
-  'Professional Self Initiatives',
-  'Others'
+  "CEA/NSS/National Initiatives (OLD)",
+  "Sports & Games",
+  "Cultural Activities",
+  "Women's forum activities",
+  "Hobby clubs Activities",
+  "Professional society Activities",
+  "Dept. Students Association Activities",
+  "Technical Club Activities",
+  "Innovation and Incubation Cell Activities",
+  "Professional Self Initiatives",
+  "Others",
 ];

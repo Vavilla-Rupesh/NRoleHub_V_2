@@ -76,6 +76,27 @@ exports.generateTeamCertificates = async (inputs) => {
         x: parseInt(inputs.body.certificateIdX),
         y: parseInt(inputs.body.certificateIdY)
       },
+      rollNumber: {
+        x: parseInt(inputs.body.rollNumberX),
+        y: parseInt(inputs.body.rollNumberY)
+      },
+      year: {
+        x: parseInt(inputs.body.yearX),
+        y: parseInt(inputs.body.yearY)
+      },
+      sem: {
+        x: parseInt(inputs.body.semX),
+        y: parseInt(inputs.body.semY)
+      },
+      stream: {
+        x: parseInt(inputs.body.streamX),
+        y: parseInt(inputs.body.streamY)
+      },
+      college: {
+        x: parseInt(inputs.body.collegeX),
+        y: parseInt(inputs.body.collegeY)
+      },
+      
       rank: inputs.body.rankX && inputs.body.rankY ? {
         x: parseInt(inputs.body.rankX),
         y: parseInt(inputs.body.rankY)
@@ -180,7 +201,14 @@ exports.generateTeamCertificates = async (inputs) => {
           coordinates,
           certificateId,
           team.rank ? `${team.rank}${getRankSuffix(team.rank)} Place Team` : null,
-          team.name
+          team.name,
+          {
+            rollNumber: member.student.roll_number,
+            year: member.student.year,
+            semester: member.student.semester,
+            collegeName: member.student.college_name,
+            stream:mem.stream
+          }
         );
 
         await fs.writeFile(outputPath, certificateBuffer);

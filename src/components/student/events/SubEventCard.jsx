@@ -105,7 +105,7 @@ function SubEventCard({ subevent, eventId, onUpdate }) {
                 <span>{subevent.participants_count || 0} participants</span>
               </div>
               <div className="flex items-center space-x-1 text-primary font-bold">
-                <span>{formatCurrency(subevent.fee)}</span>
+                <span>{formatCurrency(subevent.fee)} (Excluding Tax)</span>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ function SubEventCard({ subevent, eventId, onUpdate }) {
               className="btn btn-secondary flex-grow"
             >
               <Download className="h-4 w-4 mr-2" />
-              {downloading ? 'Downloading...' : 'Resources'}
+              {downloading ? 'Downloading...' : 'Guidelines / Information'}
             </button>
           )}
         </div>
