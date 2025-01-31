@@ -122,7 +122,7 @@ export default function Register() {
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
               <div className="glass-icon-container p-4 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20">
-              <img src="../server/server/images/logo.png" alt="logo" width={100} height={60} className="animate-pulse"/>
+              <img src="src/components/shared/logo.png" alt="logo" width={100} height={60} className="animate-pulse"/>
               </div>
             </div>
             <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
