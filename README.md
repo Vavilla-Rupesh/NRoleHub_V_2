@@ -2,14 +2,14 @@
 
 ## 🌍 Overview
 
-🎓 **CampusConnect** is a centralized platform for managing college events, offering event discovery, online registration, secure payments, certificates, leaderboards, and chatbot support for students. 
+🎓 **NRolEHub** is a centralized platform for managing college events, offering event discovery, online registration, secure payments, certificates, leaderboards, and chatbot support for students. 
 
 🎯 **Key Benefits:**
 - **For Students:** Easy event discovery, seamless registration, and instant updates.
 - **For Admins:** Effortless event creation, streamlined management, and automated workflows.
 - **For Organizers:** Simplified payments, certificate generation, and real-time insights.
 
-With automation, real-time updates, and mobile compatibility, **CampusConnect** enhances student engagement and simplifies event management! 🚀
+With automation, real-time updates, and mobile compatibility, **NRolEhub** enhances student engagement and simplifies event management! 🚀
 
 ---
 
