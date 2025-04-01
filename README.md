@@ -45,8 +45,7 @@ To set up this project locally, follow these steps:
 
 ### 🔹 Clone the repository:
 ```bash
-git clone https://github.com/muke2110/nrolehub.git
-cd nrolehub
+[git clone https://github.com/Vavilla-Rupesh/NRoleHub_V_2.git]
 ```
 
 ### 🔹 Install dependencies:
