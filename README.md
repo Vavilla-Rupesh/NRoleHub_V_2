@@ -13,7 +13,7 @@
 
 ### 🎯 Problem We Solve
 - **Manual Registration Headaches**: No more paper forms or Excel spreadsheets
-- **Payment Confusion**: Integrated secure payment processing
+- **Payment Confusion**: Integrated Razorpay payment processing
 - **Certificate Verification**: Blockchain-inspired certificate validation
 - **Event Discovery**: Students never miss relevant opportunities again
 
@@ -28,7 +28,7 @@
 ### 👥 **For Students**
 - 🔍 **Smart Event Discovery** - AI-powered recommendations
 - 📱 **One-Click Registration** - Mobile-optimized experience
-- 💳 **Secure Payments** - Multiple payment gateway support
+- 💳 **Secure Payments** - Razorpay integration for seamless transactions
 - 🏆 **Leaderboard Tracking** - Competition rankings and achievements
 - 📜 **Instant Certificates** - Digital certificates with QR verification
 
@@ -60,6 +60,7 @@
 - Node.js 18+ 
 - PostgreSQL 13+
 - npm or yarn
+- Razorpay account for payment processing
 
 ### Installation
 
@@ -73,7 +74,7 @@ npm install
 
 # Set up environment variables
 cp .env.example .env
-# Edit .env with your database and payment gateway credentials
+# Edit .env with your database and Razorpay credentials
 
 # Start development servers
 npm run dev
@@ -95,7 +96,7 @@ npm run dev
 | **Frontend** | Vite + Tailwind CSS | Lightning-fast UI development |
 | **Backend** | Node.js + Express | Robust API architecture |
 | **Database** | PostgreSQL | Reliable data management |
-| **Payments** | Multiple Gateways | Secure transaction processing |
+| **Payments** | Razorpay | Secure transaction processing |
 
 </div>
 
@@ -106,15 +107,17 @@ npm run dev
 ```
 NRolEHub/
 ├── 📂 server/           # Backend API and business logic
-│   ├── routes/          # API endpoint definitions
-│   ├── models/          # Database models
-│   └── middleware/      # Authentication & validation
 ├── 📂 src/              # Frontend React application
-│   ├── components/      # Reusable UI components
-│   ├── pages/           # Application views
-│   └── utils/           # Helper functions
-├── 📂 public/           # Static assets
-└── 📄 docs/             # Documentation
+├── 📄 .gitignore        # Git ignore rules
+├── 📄 README.md         # Project documentation
+├── ⚙️ eslint.config.js  # ESLint configuration
+├── 🎯 favicon.ico       # Website favicon
+├── 📄 index.html        # Main HTML file
+├── 📦 package.json      # Dependencies and scripts
+├── 📦 package-lock.json # Dependency lock file
+├── 🎨 postcss.config.js # PostCSS configuration
+├── 🎨 tailwind.config.js # Tailwind CSS configuration
+└── ⚡ vite.config.js    # Vite build configuration
 ```
 
 ---
